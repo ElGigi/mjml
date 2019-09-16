@@ -1,4 +1,13 @@
 <?php
+/**
+ * @license   https://opensource.org/licenses/MIT MIT License
+ * @copyright 2018 Ronan GIRON
+ * @author    Ronan GIRON <https://github.com/ElGigi>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code, to the root.
+ */
+
 declare(strict_types=1);
 
 namespace ElGigi\Mjml;
@@ -14,6 +23,8 @@ class Mjml
     private $command;
     /** @var string Directory */
     private $directory;
+    /** @var bool Minify */
+    private $minify;
 
     /**
      * Mjml constructor.
@@ -25,6 +36,7 @@ class Mjml
     {
         $this->command = $command;
         $this->directory = $directory;
+        $this->minify = true;
     }
 
     /**
@@ -42,6 +54,36 @@ class Mjml
         }
 
         return $tmpName;
+    }
+
+    /**
+     * Minify.
+     *
+     * @param bool $minify
+     *
+     * @return \ElGigi\Mjml\Mjml
+     */
+    public function minify($minify = true): Mjml
+    {
+        $this->minify = $minify;
+
+        return $this;
+    }
+
+    /**
+     * Get options.
+     *
+     * @return string
+     */
+    private function getStrOptions(): string
+    {
+        $options = [];
+
+        if ($this->minify) {
+            $options[] = '--config.minify';
+        }
+
+        return implode(' ', $options);
     }
 
     /**
@@ -63,7 +105,7 @@ class Mjml
         ];
 
         $process = proc_open(
-            sprintf('%s %s -s', escapeshellcmd($this->command), escapeshellarg($mjmlFile)),
+            sprintf('%s %s -s %s', escapeshellcmd($this->command), escapeshellarg($mjmlFile), $this->getStrOptions()),
             $descriptorSpec,
             $pipes,
             $this->directory
@@ -83,6 +125,9 @@ class Mjml
                 throw new MjmlException($error);
             }
         }
+
+        // Remove html commented line
+        $output = trim(preg_replace('#<!--\s+[^>]+-->#i', '', $output));
 
         return $output;
     }
