@@ -3,6 +3,7 @@
 composer.lock
 package-lock.json
 phpunit.xml
+.phpunit.result.cache
 
 # Dev environment
 .idea
