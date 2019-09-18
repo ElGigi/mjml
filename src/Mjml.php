@@ -122,7 +122,7 @@ class Mjml
 
         if (($status = proc_close($process)) !== 0) {
             if ($error) {
-                throw new MjmlException($error);
+                throw new MjmlException($error, $status);
             }
         }
 
