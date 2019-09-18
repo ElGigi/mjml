@@ -15,14 +15,14 @@ PHP library who use MJML node.js library to convert MJML language to HTML.
 You can install the client with [Composer](https://getcomposer.org/), it's the recommended installation.
 
 ```bash
-$ composer require elgigi/mjml
-$ npm install mjml
+composer require elgigi/mjml
+npm install mjml
 ```
 
 ### Dependencies
 
-* **PHP** >= 7.1
-* NPM: **mjml**
+  * **PHP** >= 7.1
+  * NPM: **mjml**
 
 ## Usage
 
