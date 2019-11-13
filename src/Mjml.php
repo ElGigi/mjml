@@ -31,12 +31,18 @@ class Mjml
      *
      * @param string $command
      * @param string|null $directory
+     *
+     * @throws \ElGigi\Mjml\MjmlException
      */
     public function __construct(string $command, string $directory = null)
     {
         $this->command = $command;
         $this->directory = $directory;
         $this->minify = true;
+
+        if (!function_exists('proc_open') || !function_exists('proc_close')) {
+            throw new MjmlException('Library MJML needs "proc_open" and "proc_close" functions');
+        }
     }
 
     /**
