@@ -8,7 +8,7 @@
  * file that was distributed with this source code, to the root.
  */
 
-namespace ElGigi\MJML\Tests;
+namespace ElGigi\Mjml\Tests;
 
 use ElGigi\Mjml\Mjml;
 use PHPUnit\Framework\TestCase;
