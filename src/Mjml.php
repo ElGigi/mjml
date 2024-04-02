@@ -25,6 +25,8 @@ class Mjml
     private $directory;
     /** @var bool Minify */
     private $minify;
+    /** @var array Temporary files */
+    private $tempFiles = [];
 
     /**
      * Mjml constructor.
@@ -32,7 +34,7 @@ class Mjml
      * @param string $command
      * @param string|null $directory
      *
-     * @throws \ElGigi\Mjml\MjmlException
+     * @throws MjmlException
      */
     public function __construct(string $command, string $directory = null)
     {
@@ -45,19 +47,32 @@ class Mjml
         }
     }
 
+    public function __destruct()
+    {
+        array_walk(
+            $this->tempFiles,
+            function ($tempName) {
+                @unlink($tempName);
+            }
+        );
+    }
+
     /**
      * Create tmp file.
      *
      * @return string
-     * @throws \ElGigi\MjMl\MjmlException
+     * @throws MjmlException
      */
     private function createTmpFile(): string
     {
         $tmpName = tempnam(sys_get_temp_dir(), 'mjml_');
 
         if ($tmpName === false) {
-            throw new MjmlException(sprintf('Unable to create temporary file in tmp directory "%s"', sys_get_temp_dir()));
+            throw new MjmlException(sprintf('Unable to create temporary file in tmp directory "%s"',
+                sys_get_temp_dir()));
         }
+
+        $this->tempFiles[] = $tmpName;
 
         return $tmpName;
     }
@@ -67,9 +82,9 @@ class Mjml
      *
      * @param bool $minify
      *
-     * @return \ElGigi\Mjml\Mjml
+     * @return Mjml
      */
-    public function minify($minify = true): Mjml
+    public function minify(bool $minify = true): Mjml
     {
         $this->minify = $minify;
 
@@ -99,7 +114,7 @@ class Mjml
      * @param string|null $error
      *
      * @return string
-     * @throws \ElGigi\MjMl\MjmlException
+     * @throws MjmlException
      */
     private function execute(string $input = '', string &$error = null): string
     {
@@ -144,7 +159,7 @@ class Mjml
      * @param string $mjml
      *
      * @return string
-     * @throws \ElGigi\MjMl\MjmlException
+     * @throws MjmlException
      */
     public function strToHtml(string $mjml): string
     {
